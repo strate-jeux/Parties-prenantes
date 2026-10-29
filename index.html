@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qui décide vraiment ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#07164D;overflow:hidden;font-family:'Poppins',Arial,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+.slide h1,.slide h2,.slide h3,.slide p,.slide ul{margin:0}
+.slide ul{padding-left:1.1em}
+.slide table{border-collapse:separate;border-spacing:0;overflow:hidden}
+.slide th{text-align:left;font-weight:700}
+.slide th,.slide td{padding:.5em .7em;border-bottom:1px solid #EBCFC6}
+.slide tr:last-child td{border-bottom:0}
+.notes{display:none}
+#bar{position:fixed;right:16px;bottom:12px;display:flex;gap:8px;align-items:center;font:600 14px 'Poppins',Arial,sans-serif;color:#07164D;opacity:.35;transition:opacity .2s}
+#bar:hover,#bar:focus-within{opacity:1}
+#bar button{border:0;border-radius:10px;background:#FFFBF8;color:#07164D;font:inherit;padding:6px 12px;cursor:pointer}
+#bar button:focus-visible{outline:3px solid #F7C948}
+#count{background:#FFFBF8;border-radius:10px;padding:6px 12px;font-variant-numeric:tabular-nums}
+@media print{
+  html,body{overflow:visible;background:none}
+  #stage{position:static;transform:none!important}
+  .slide{position:relative;opacity:1;visibility:visible;page-break-after:always}
+  #bar{display:none}
+  @page{size:1920px 1080px;margin:0}
+}
+</style>
+</head>
+<body>
+<main id="stage">
+<section id="cover" class="slide" aria-label="Diapo 1" style="background:#062DA1;color:#FFF1EC;font-family:'Poppins', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:40px">
+<svg aria-label="Un biscuit aux pépites de chocolat" viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#07164D" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" style="position:absolute;left:1232px;top:300px;width:480px;height:480px"><circle cx="60" cy="60" r="44" fill="#E9B872"/><circle cx="44" cy="46" r="6" fill="#6B3E1E" stroke="none"/><circle cx="72" cy="40" r="5" fill="#6B3E1E" stroke="none"/><circle cx="78" cy="68" r="7" fill="#6B3E1E" stroke="none"/><circle cx="50" cy="76" r="6" fill="#6B3E1E" stroke="none"/><circle cx="62" cy="58" r="4" fill="#6B3E1E" stroke="none"/></svg>
+<div style="width:1040px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#F7C948">STRATÉJEUX · Jeu des parties prenantes</p>
+<h1 style="font-size:144px;font-weight:800;line-height:1.05;color:#FFF8F4">Qui décide vraiment ?</h1>
+<p style="font-size:40px;line-height:1.35;color:#D6E0FB">Une entreprise, sept groupes, dix décisions. Chacun défend ses intérêts… mais tout le monde n’a pas le même poids.</p>
+</div>
+<aside class="notes">Présenter le jeu : on va prendre les décisions d’une vraie entreprise, chaque groupe joue une partie prenante.</aside>
+</section>
+<section id="entreprise" class="slide" aria-label="Diapo 2" style="background:#FDDED6;color:#07164D;font-family:'Poppins', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#B83A22">L’entreprise</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#062DA1">Biscuiterie Bréval</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px">
+<p style="font-size:44px;font-weight:600;line-height:1.3">Biscuits au beurre et au chocolat, vendus en supermarché partout en France.</p>
+<p style="font-size:32px;line-height:1.4;color:#5A5F80">C’est elle que vous allez faire vivre pendant dix décisions.</p>
+</div>
+<div style="width:760px;background:#FFFBF8;border-radius:24px;padding:48px;display:flex;flex-direction:column;gap:20px">
+<ul style="font-size:32px;line-height:1.4;display:flex;flex-direction:column;gap:20px">
+<li>SAS fondée en 1987, une usine en France</li>
+<li>85 salariés</li>
+<li>Capital : famille fondatrice (60 %) et fonds d’investissement (40 %)</li>
+<li>Dirigée par une directrice générale recrutée à l’extérieur, non actionnaire</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
+<aside class="notes">Insister sur la séparation entre propriétaires (famille + fonds) et dirigeants (une DG salariée).</aside>
+</section>
+<section id="jauges" class="slide" aria-label="Diapo 3" style="background:#FFF1EC;color:#07164D;font-family:'Poppins', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#B83A22">Les règles du jeu</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#062DA1">Trois jauges à surveiller</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFBF8;border-radius:24px;border-top:12px solid #062DA1;padding:40px;display:flex;flex-direction:column;gap:16px">
+<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#062DA1;width:64px;height:64px;flex:none"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg>
+<h3 style="font-size:40px;font-weight:700">Santé financière</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">Trésorerie et rentabilité : l’entreprise peut-elle payer ses charges et investir ?</p>
+</div>
+<div style="flex:1;background:#FFFBF8;border-radius:24px;border-top:12px solid #F7C948;padding:40px;display:flex;flex-direction:column;gap:16px">
+<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#062DA1;width:64px;height:64px;flex:none"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
+<h3 style="font-size:40px;font-weight:700">Image</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">Réputation et confiance des consommateurs, des médias et du public.</p>
+</div>
+<div style="flex:1;background:#FFFBF8;border-radius:24px;border-top:12px solid #F26B4F;padding:40px;display:flex;flex-direction:column;gap:16px">
+<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#062DA1;width:64px;height:64px;flex:none"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.8"/><path d="M16 14.2c3 .2 5.5 2.3 5.5 5.8"/></svg>
+<h3 style="font-size:40px;font-weight:700">Climat social</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">Motivation des salariés, qualité du dialogue social, risque de conflit.</p>
+</div>
+</div>
+<p style="background:#062DA1;color:#FFF1EC;border-radius:20px;padding:28px 40px;font-size:28px;line-height:1.4"><b>Départ : 6/10 partout.</b> Santé financière à 0 = faillite. Image ou climat social à 0 = −1 en santé financière à chaque décision.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
+<aside class="notes">Les jauges vont de 0 à 10. Image à 0 : boycott massif. Climat social à 0 : grève générale.</aside>
+</section>
+<section id="groupes" class="slide" aria-label="Diapo 4" style="background:#FDDED6;color:#07164D;font-family:'Poppins', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#B83A22">Les joueurs</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#062DA1">Sept parties prenantes</h2>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:24px">
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #062DA1;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Dirigeants</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">Faire durer l’entreprise en arbitrant entre des intérêts opposés.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #7B3FA0;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Propriétaires</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">Un retour sur l’argent investi : dividendes et valeur.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #E8452C;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Salariés</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">Un bon salaire, de bonnes conditions, un emploi stable.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #F2994A;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Clients</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">Un bon rapport qualité/prix et des produits de confiance.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #1B8A8F;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">État</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">L’emploi, le respect de la loi, la santé publique, l’impôt.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #2E9E5B;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Société civile</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">Des entreprises responsables : environnement, éthique.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;border-top:10px solid #C2185B;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Fournisseurs</h3>
+<p style="font-size:24px;line-height:1.35;color:#5A5F80">Garder un client fiable, être payés à temps.</p>
+</div>
+<div style="background:#062DA1;border-radius:20px;padding:28px;display:flex;flex-direction:column;justify-content:center;gap:8px">
+<p style="font-size:24px;line-height:1.35;color:#FFF1EC"><b>À 6 groupes</b>, on retire les Fournisseurs. <b>À 5</b>, aussi la Société civile.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
+<aside class="notes">Chaque groupe reçoit un objectif propre (jauges à atteindre + une décision à obtenir). Il ne le dévoile pas forcément aux autres.</aside>
+</section>
+<section id="deroule" class="slide" aria-label="Diapo 5" style="background:#FFF1EC;color:#07164D;font-family:'Poppins', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:64px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#B83A22">Les règles du jeu</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#062DA1">Une décision en quatre temps</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="width:104px;height:104px;border-radius:50%;background:#F26B4F;color:#FFFBF8;font-size:48px;font-weight:800;line-height:104px;text-align:center">1</p>
+<h3 style="font-size:40px;font-weight:700">Lire</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">La situation, les options A et B, et qui pèse sur cette décision.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="width:104px;height:104px;border-radius:50%;background:#F26B4F;color:#FFFBF8;font-size:48px;font-weight:800;line-height:104px;text-align:center">2</p>
+<h3 style="font-size:40px;font-weight:700">Négocier</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">Les groupes discutent, s’allient, cherchent à convaincre.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="width:104px;height:104px;border-radius:50%;background:#F26B4F;color:#FFFBF8;font-size:48px;font-weight:800;line-height:104px;text-align:center">3</p>
+<h3 style="font-size:40px;font-weight:700">Voter</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">Chaque groupe qui a des voix choisit A ou B, et peut activer son levier.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="width:104px;height:104px;border-radius:50%;background:#F26B4F;color:#FFFBF8;font-size:48px;font-weight:800;line-height:104px;text-align:center">4</p>
+<h3 style="font-size:40px;font-weight:700">Dévoiler</h3>
+<p style="font-size:28px;line-height:1.4;color:#5A5F80">L’option gagnante s’applique : les jauges bougent.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
+<aside class="notes">On répète ces quatre temps pour les dix décisions. Prévoir 3 à 5 minutes de négociation par décision.</aside>
+</section>
+<section id="poids" class="slide" aria-label="Diapo 6" style="background:#FDDED6;color:#07164D;font-family:'Poppins', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#B83A22">Les règles du jeu</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#062DA1">Des voix inégales, des leviers</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:start">
+<div style="width:560px;display:flex;flex-direction:column;gap:20px">
+<div style="background:#FFFBF8;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">0 à 3 voix</h3>
+<p style="font-size:24px;line-height:1.4;color:#5A5F80">Le poids de chaque groupe change selon la décision. Sans voix, il faut convaincre les autres.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Un levier par partie</h3>
+<p style="font-size:24px;line-height:1.4;color:#5A5F80">Il double vos voix (1 voix si vous n’en aviez aucune), mais il a un coût.</p>
+</div>
+<div style="background:#FFFBF8;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:32px;font-weight:700">Égalité</h3>
+<p style="font-size:24px;line-height:1.4;color:#5A5F80">Le choix des Dirigeants l’emporte.</p>
+</div>
+</div>
+<table style="flex:1;font-family:'Poppins', Arial, sans-serif;font-size:24px;color:#07164D;background:#FFFBF8;border-radius:20px">
+<tr style="background:#062DA1"><th style="width:28%;color:#FFF1EC">Groupe</th><th style="width:36%;color:#FFF1EC">Levier</th><th style="width:36%;color:#FFF1EC">Contrepartie</th></tr>
+<tr><td>Dirigeants</td><td>Arbitrage de la direction</td><td>Climat social −1</td></tr>
+<tr><td>Propriétaires</td><td>Menace de retrait du fonds</td><td>Si perdu : finances −1</td></tr>
+<tr><td>Salariés</td><td>Grève</td><td>Finances −1</td></tr>
+<tr><td>Clients</td><td>Boycott</td><td>Si perdu : finances −1, image −1</td></tr>
+<tr><td>État</td><td>Aide sous conditions</td><td>Si gagné : finances +1</td></tr>
+<tr><td>Société civile</td><td>Campagne médiatique</td><td>Si perdu : image −2</td></tr>
+<tr><td>Fournisseurs</td><td>Renégociation du contrat</td><td>Si perdu : finances −1</td></tr>
+</table>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
+<aside class="notes">« Si perdu » : l’effet s’applique quand l’option défendue par le groupe ne passe pas. Chaque levier correspond à un moyen de pression réel.</aside>
+</section>
+<section id="exemple" class="slide" aria-label="Diapo 7" style="background:#FFF1EC;color:#07164D;font-family:'Poppins', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;gap:32px;align-items:start">
+<p style="width:120px;height:120px;border-radius:50%;background:#F26B4F;color:#FFFBF8;font-size:56px;font-weight:800;line-height:120px;text-align:center">1</p>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#B83A22">Exemple · Décision 1 sur 10</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#062DA1">Le prix du paquet</h2>
+<p style="font-size:32px;line-height:1.4">Un concurrent vient de baisser ses prix. Nos ventes reculent et les consommateurs trouvent nos biscuits trop chers.</p>
+</div>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFBF8;border-radius:24px;border-left:12px solid #062DA1;padding:36px;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:24px;font-weight:800;letter-spacing:2px;color:#062DA1">OPTION A</p>
+<h3 style="font-size:40px;font-weight:700">Baisser le prix de 10 %</h3>
+<p style="font-size:28px;color:#5A5F80">Finances −1 · Image +2</p>
+</div>
+<div style="flex:1;background:#FFFBF8;border-radius:24px;border-left:12px solid #F26B4F;padding:36px;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:24px;font-weight:800;letter-spacing:2px;color:#B83A22">OPTION B</p>
+<h3 style="font-size:40px;font-weight:700">Garder le prix actuel</h3>
+<p style="font-size:28px;color:#5A5F80">Finances +1 · Image −1</p>
+</div>
+</div>
+<p style="background:#062DA1;color:#FFF1EC;border-radius:20px;padding:28px 40px;font-size:28px;line-height:1.4"><b>Qui pèse ici ?</b> Dirigeants 3 voix · Clients 3 voix · Propriétaires 1 voix · les autres : aucune.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
+<aside class="notes">La direction fixe les prix, mais ce sont les clients qui décident d’acheter ou non. Les Salariés n’ont pas de voix ici : ils peuvent quand même négocier, ou déclencher la grève pour obtenir 1 voix.</aside>
+</section>
+<section id="debrief" class="slide" aria-label="Diapo 8" style="background:#062DA1;color:#FFF1EC;font-family:'Poppins', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#F7C948">Fin de partie</p>
+<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#FFF8F4">Pour le débrief</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;gap:32px;align-items:center">
+<p style="width:88px;height:88px;border-radius:50%;background:#F7C948;color:#07164D;font-size:40px;font-weight:800;line-height:88px;text-align:center">1</p>
+<p style="flex:1;font-size:40px;font-weight:600;line-height:1.3">Quel groupe a eu le plus de pouvoir, et d’où venait-il ?</p>
+</div>
+<div style="display:flex;gap:32px;align-items:center">
+<p style="width:88px;height:88px;border-radius:50%;background:#F7C948;color:#07164D;font-size:40px;font-weight:800;line-height:88px;text-align:center">2</p>
+<p style="flex:1;font-size:40px;font-weight:600;line-height:1.3">Quelles décisions ont opposé deux groupes ?</p>
+</div>
+<div style="display:flex;gap:32px;align-items:center">
+<p style="width:88px;height:88px;border-radius:50%;background:#F7C948;color:#07164D;font-size:40px;font-weight:800;line-height:88px;text-align:center">3</p>
+<p style="flex:1;font-size:40px;font-weight:600;line-height:1.3">Quelle stratégie l’entreprise a-t-elle suivie, sans que personne ne l’ait choisie au départ ?</p>
+</div>
+</div>
+<aside class="notes">Avant les questions, chaque groupe vérifie s’il a atteint son objectif.</aside>
+</section>
+</main>
+<nav id="bar" aria-label="Navigation">
+<button id="prev" aria-label="Diapo précédente">←</button>
+<span id="count"></span>
+<button id="next" aria-label="Diapo suivante">→</button>
+<button id="fs" aria-label="Plein écran">⛶</button>
+</nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const stage=document.getElementById('stage');
+let i=0;
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+function show(n,push=true){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.setAttribute('aria-hidden',k!==i);});
+  document.getElementById('count').textContent=`${i+1} / ${slides.length}`;
+  if(push)history.replaceState(null,'',`#${i+1}`);
+}
+function fromHash(){const n=parseInt(location.hash.slice(1),10);show(Number.isFinite(n)?n-1:0,false);}
+addEventListener('resize',fit);
+addEventListener('hashchange',fromHash);
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(i+1);}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(i-1);}
+  else if(e.key==='Home')show(0);
+  else if(e.key==='End')show(slides.length-1);
+  else if(e.key==='f'||e.key==='F')toggleFs();
+});
+document.getElementById('prev').onclick=()=>show(i-1);
+document.getElementById('next').onclick=()=>show(i+1);
+document.getElementById('fs').onclick=()=>toggleFs();
+function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();}
+stage.addEventListener('click',e=>{if(e.target.closest('a'))return;show(e.clientX<innerWidth/3?i-1:i+1);});
+let x0=null;
+addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
+addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(dx<0?i+1:i-1);x0=null;});
+fit();fromHash();
+</script>
+</body>
+</html>
