@@ -83,7 +83,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 /* Votes */
 .votes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .vr{background:#fff;border-radius:16px;padding:12px;border-top:6px solid var(--c);display:flex;flex-direction:column;gap:8px}
-.vr .nm{display:flex;align-items:center;gap:8px;font-weight:700}
+.vr .nm{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-weight:700}
 .vr .nm .ic{width:30px;height:30px;flex-shrink:0}
 .w{margin-left:auto;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
 .dots{display:inline-flex;gap:3px;vertical-align:middle}
@@ -392,7 +392,7 @@ function fresh(n){
 S = window.claude?.hot?.data?.S || fresh(7);
 window.claude?.hot?.snapshot?.(() => ({S}));
 
-function icon(id, size){ return `<span style="display:inline-flex;width:${size}px;height:${size}px">${ICONS[R[id].icone]}</span>`; }
+function icon(id, size){ return `<span style="display:inline-flex;flex:none;width:${size}px;height:${size}px">${ICONS[R[id].icone].replace('width="120" height="120"',`width="${size}" height="${size}"`)}</span>`; }
 function dots(n, c){ return n === 0 ? `<span>aucune voix</span>` : `<span class="dots" style="--c:${c}">${[0,1,2].map(i => `<i class="${i<n?'on':''}"></i>`).join("")}</span> ${n} voix`; }
 
 function zone(v){ return v <= 3 ? "var(--bad)" : v <= 5 ? "var(--warn)" : "var(--ok)"; }
