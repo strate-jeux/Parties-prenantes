@@ -2,39 +2,161 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Qui décide vraiment ?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>body{margin:0;padding:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:#07164D;overflow:hidden;font-family:'Poppins',Arial,sans-serif}
-#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
-.slide{position:absolute;inset:0;width:1920px;height:1080px;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;overflow:hidden}
-.slide.active{opacity:1;visibility:visible}
-.slide h1,.slide h2,.slide h3,.slide p,.slide ul{margin:0}
-.slide ul{padding-left:1.1em}
-.slide table{border-collapse:separate;border-spacing:0;overflow:hidden}
-.slide th{text-align:left;font-weight:700}
-.slide th,.slide td{padding:.5em .7em;border-bottom:1px solid #EBCFC6}
-.slide tr:last-child td{border-bottom:0}
-.notes{display:none}
-#bar{position:fixed;right:16px;bottom:12px;display:flex;gap:8px;align-items:center;font:600 14px 'Poppins',Arial,sans-serif;color:#07164D;opacity:.35;transition:opacity .2s}
-#bar:hover,#bar:focus-within{opacity:1}
-#bar button{border:0;border-radius:10px;background:#FFFBF8;color:#07164D;font:inherit;padding:6px 12px;cursor:pointer}
-#bar button:focus-visible{outline:3px solid #F7C948}
-#count{background:#FFFBF8;border-radius:10px;padding:6px 12px;font-variant-numeric:tabular-nums}
-@media print{
-  html,body{overflow:visible;background:none}
-  #stage{position:static;transform:none!important}
-  .slide{position:relative;opacity:1;visibility:visible;page-break-after:always}
-  #bar{display:none}
-  @page{size:1920px 1080px;margin:0}
+/* Layout : bandeau des jauges en haut, carte de décision au centre, table de vote des groupes dessous. Charte STRATÉJEUX, look clair unique pensé pour la projection. */
+:root{
+  --navy:#062DA1; --deep:#07164D; --peach:#FDDED6; --peach2:#FFF1EC;
+  --yellow:#F7C948; --coral:#F26B4F; --sky:#A9C4F5; --line:#EBCFC6;
+  --ink:#07164D; --muted:#5A5F80; --white:#ffffff;
+  --ok:#1F9D55; --warn:#E59A13; --bad:#D63A2A;
+  --display:"Poppins", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
 }
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--peach);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.4;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:16px 40px}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+
+/* Bandeau */
+.top{background:var(--navy);color:var(--white)}
+.top .wrap{padding-block:14px 16px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand b{font-weight:800;letter-spacing:.06em;color:var(--yellow);font-size:12px}
+.brand .co{font-weight:700;font-size:15px}
+.gauges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:1;min-width:min(100%,520px)}
+.g{background:rgba(255,255,255,.08);border-radius:12px;padding:8px 12px}
+.g .hd{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+.g .hd span:last-child{font-variant-numeric:tabular-nums}
+.segs{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:6px}
+.seg{height:12px;border-radius:6px;background:rgba(255,255,255,.18);transition:background .4s}
+.delta{font-size:12px;font-weight:700;margin-left:6px}
+.delta.up{color:#8EF0B4}.delta.down{color:#FFB3A6}
+.alerts{width:100%;display:flex;flex-wrap:wrap;gap:8px}
+.alerts:empty{display:none}
+.alert{background:var(--coral);color:#fff;border-radius:99px;padding:4px 12px;font-size:13px;font-weight:600}
+
+/* Écrans */
+.card{background:var(--white);border-radius:20px;padding:22px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--coral)}
+.muted{color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:700;font-size:15px;background:var(--navy);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--navy);border:2px solid var(--navy)}
+.btn.yellow{background:var(--yellow);color:var(--deep)}
+
+/* Accueil */
+.setup{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;margin-top:16px}
+.setup h1{font-size:clamp(30px,4.5vw,48px);line-height:1.05;color:var(--navy)}
+.choice{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.choice button{border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:14px;padding:10px 16px;font-weight:700}
+.choice button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.rolelist{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:4px 12px 4px 4px;color:#fff;font-weight:600;font-size:14px}
+.chip .ic{width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+.chip.off{background:#cfd2de!important;color:#6d7190;text-decoration:line-through}
+.co-list{margin:8px 0 0;padding-left:18px}
+
+/* Décision */
+.dec{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:16px}
+.dhead{display:flex;gap:16px;align-items:flex-start}
+.num{width:58px;height:58px;border-radius:50%;background:var(--coral);color:#fff;font-weight:800;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dtitle{font-size:clamp(24px,3.2vw,36px);line-height:1.1;color:var(--navy)}
+.dctx{font-size:clamp(16px,1.7vw,19px);margin:6px 0 0;max-width:70ch}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.opt{border-radius:16px;padding:14px 16px;background:var(--peach2);border:2px solid transparent}
+.opt .l{font-size:13px;font-weight:800;letter-spacing:.06em}
+.opt .t{font-size:clamp(17px,1.8vw,21px);font-weight:700;line-height:1.2}
+.opt.A .l{color:var(--navy)} .opt.B .l{color:var(--coral)}
+.opt.win{border-color:var(--yellow);background:#FFF6D8}
+.opt.lose{opacity:.45}
+.why{font-size:14px;margin-top:12px}
+
+/* Votes */
+.votes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.vr{background:#fff;border-radius:16px;padding:12px;border-top:6px solid var(--c);display:flex;flex-direction:column;gap:8px}
+.vr .nm{display:flex;align-items:center;gap:8px;font-weight:700}
+.vr .nm .ic{width:30px;height:30px;flex-shrink:0}
+.w{margin-left:auto;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.dots{display:inline-flex;gap:3px;vertical-align:middle}
+.dots i{width:10px;height:10px;border-radius:50%;border:2px solid var(--c);display:inline-block}
+.dots i.on{background:var(--c)}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ab button{border:2px solid var(--c);background:#fff;color:var(--ink);border-radius:10px;padding:8px 0;font-weight:800;font-size:16px}
+.ab button[aria-pressed="true"]{background:var(--c);color:#fff}
+.ab button:disabled{border-color:#e0e2ea;color:#b9bccb;cursor:not-allowed;background:#fafafc}
+.lev{display:flex;align-items:center;gap:8px;font-size:13px;border:0;background:transparent;padding:0;color:var(--ink);text-align:left}
+.lev .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:#fff}
+.lev[aria-pressed="true"] .box{background:var(--c)}
+.lev:disabled{opacity:.45;cursor:not-allowed}
+.nov{font-size:13px;color:var(--muted)}
+.bar-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.hint{font-size:14px;color:var(--muted)}
+
+/* Résultat */
+.tally{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;margin-top:8px}
+.tally .lab{font-weight:800}
+.track{height:26px;background:var(--peach2);border-radius:13px;overflow:hidden;display:flex}
+.track span{display:block;height:100%;transition:width .6s}
+.tally .n{font-weight:800;font-variant-numeric:tabular-nums;font-size:18px}
+.conseq{font-size:clamp(17px,1.8vw,20px);font-weight:600;margin-top:14px}
+.effects{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.eff{border-radius:99px;padding:4px 12px;font-size:14px;font-weight:600;background:var(--peach2)}
+.eff.up{background:#E1F5E9;color:#14663A}.eff.down{background:#FDE3DE;color:#9C2717}
+.log{font-size:14px;margin-top:10px;padding-left:18px}
+
+/* Fin */
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:12px}
+.res{background:#fff;border-radius:16px;padding:14px;border-left:8px solid var(--c)}
+.res .st{font-size:13px;font-weight:800;letter-spacing:.06em}
+.res.won .st{color:var(--ok)} .res.lost .st{color:var(--bad)}
+.res ul{margin:6px 0 0;padding-left:18px;font-size:14px}
+.hist{font-size:14px;margin-top:10px;columns:2;column-gap:24px}
+.hist div{break-inside:avoid;margin-bottom:4px}
+
+@media (max-width:720px){
+  .setup{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .gauges{grid-template-columns:1fr}
+  .hist{columns:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+/* Consignes en diapos (1920×1080 mis à l'échelle), affichées avant le jeu */
+html.intro-mode,html.intro-mode body{overflow:hidden;height:100%}
+#intro{position:fixed;inset:0;z-index:20;background:#07164D;font-family:'Poppins',Arial,sans-serif}
+#intro[hidden]{display:none}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
+#stage .slide{position:absolute;inset:0;width:1920px;height:1080px;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;overflow:hidden;text-wrap:wrap}
+#stage .slide.active{opacity:1;visibility:visible}
+#stage .slide h1,#stage .slide h2,#stage .slide h3,#stage .slide p,#stage .slide ul{margin:0;text-wrap:wrap}
+#stage .slide ul{padding-left:1.1em}
+#stage .slide table{border-collapse:separate;border-spacing:0;overflow:hidden}
+#stage .slide th{text-align:left;font-weight:700}
+#stage .slide th,#stage .slide td{padding:.5em .7em;border-bottom:1px solid #EBCFC6}
+#stage .slide tr:last-child td{border-bottom:0}
+.notes{display:none}
+.go{border:0;background:#F7C948;color:#07164D;font-family:'Poppins',Arial,sans-serif;font-weight:800;cursor:pointer}
+.go:focus-visible{outline:4px solid #FFF8F4;outline-offset:3px}
+#bar{position:fixed;right:16px;bottom:12px;display:flex;gap:8px;align-items:center;font:600 14px 'Poppins',Arial,sans-serif;color:#07164D}
+#bar button,#count{border:0;border-radius:10px;background:#FFFBF8;color:#07164D;font:inherit;padding:6px 12px}
+#bar button{cursor:pointer}
+#bar button.go{background:#F7C948;font-weight:800}
+#count{font-variant-numeric:tabular-nums;opacity:.8}
+#rules{position:fixed;right:16px;bottom:12px;z-index:10;border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:12px;padding:6px 12px;font-weight:700;font-size:14px}
 </style>
 </head>
 <body>
+<div id="intro" role="region" aria-label="Consignes du jeu">
 <main id="stage">
 <section id="cover" class="slide" aria-label="Diapo 1" style="background:#062DA1;color:#FFF1EC;font-family:'Poppins', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:40px">
 <svg aria-label="Un biscuit aux pépites de chocolat" viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#07164D" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" style="position:absolute;left:1232px;top:300px;width:480px;height:480px"><circle cx="60" cy="60" r="44" fill="#E9B872"/><circle cx="44" cy="46" r="6" fill="#6B3E1E" stroke="none"/><circle cx="72" cy="40" r="5" fill="#6B3E1E" stroke="none"/><circle cx="78" cy="68" r="7" fill="#6B3E1E" stroke="none"/><circle cx="50" cy="76" r="6" fill="#6B3E1E" stroke="none"/><circle cx="62" cy="58" r="4" fill="#6B3E1E" stroke="none"/></svg>
@@ -223,64 +345,269 @@ html,body{margin:0;height:100%;background:#07164D;overflow:hidden;font-family:'P
 <p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A5F80">STRATÉJEUX · Qui décide vraiment ?</p>
 <aside class="notes">La direction fixe les prix, mais ce sont les clients qui décident d’acheter ou non. Les Salariés n’ont pas de voix ici : ils peuvent quand même négocier, ou déclencher la grève pour obtenir 1 voix.</aside>
 </section>
-<section id="debrief" class="slide" aria-label="Diapo 8" style="background:#062DA1;color:#FFF1EC;font-family:'Poppins', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#F7C948">Fin de partie</p>
-<h2 style="font-size:72px;font-weight:800;line-height:1.1;color:#FFF8F4">Pour le débrief</h2>
-</div>
-<div style="display:flex;flex-direction:column;gap:32px">
-<div style="display:flex;gap:32px;align-items:center">
-<p style="width:88px;height:88px;border-radius:50%;background:#F7C948;color:#07164D;font-size:40px;font-weight:800;line-height:88px;text-align:center">1</p>
-<p style="flex:1;font-size:40px;font-weight:600;line-height:1.3">Quel groupe a eu le plus de pouvoir, et d’où venait-il ?</p>
-</div>
-<div style="display:flex;gap:32px;align-items:center">
-<p style="width:88px;height:88px;border-radius:50%;background:#F7C948;color:#07164D;font-size:40px;font-weight:800;line-height:88px;text-align:center">2</p>
-<p style="flex:1;font-size:40px;font-weight:600;line-height:1.3">Quelles décisions ont opposé deux groupes ?</p>
-</div>
-<div style="display:flex;gap:32px;align-items:center">
-<p style="width:88px;height:88px;border-radius:50%;background:#F7C948;color:#07164D;font-size:40px;font-weight:800;line-height:88px;text-align:center">3</p>
-<p style="flex:1;font-size:40px;font-weight:600;line-height:1.3">Quelle stratégie l’entreprise a-t-elle suivie, sans que personne ne l’ait choisie au départ ?</p>
-</div>
-</div>
-<aside class="notes">Avant les questions, chaque groupe vérifie s’il a atteint son objectif.</aside>
+<section id="jouer" class="slide" aria-label="Diapo 8" style="background:#062DA1;color:#FFF1EC;font-family:'Poppins', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#F7C948">C’est parti</p>
+<h2 style="font-size:144px;font-weight:800;line-height:1.05;color:#FFF8F4">À vous de jouer&#160;!</h2>
+<p style="font-size:40px;line-height:1.35;color:#D6E0FB;width:1200px">Choisissez le nombre de groupes, puis saisissez les votes de chaque groupe à chaque décision.</p>
+<button class="go" data-play style="align-self:start;font-size:44px;padding:28px 56px;border-radius:28px">Commencer la partie →</button>
+<aside class="notes">Le débrief se fait sur l’écran de fin de partie.</aside>
 </section>
 </main>
-<nav id="bar" aria-label="Navigation">
+<nav id="bar" aria-label="Navigation des consignes">
 <button id="prev" aria-label="Diapo précédente">←</button>
 <span id="count"></span>
 <button id="next" aria-label="Diapo suivante">→</button>
 <button id="fs" aria-label="Plein écran">⛶</button>
+<button class="go" data-play>Passer au jeu</button>
 </nav>
+</div>
+<button id="rules" hidden onclick="openIntro()">Revoir les consignes</button>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand" id="brand"></div>
+    <div class="gauges" id="gauges"></div>
+    <div class="alerts" id="alerts"></div>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+
 <script>
-const slides=[...document.querySelectorAll('.slide')];
-const stage=document.getElementById('stage');
-let i=0;
-function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
-function show(n,push=true){
-  i=Math.max(0,Math.min(slides.length-1,n));
-  slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.setAttribute('aria-hidden',k!==i);});
-  document.getElementById('count').textContent=`${i+1} / ${slides.length}`;
-  if(push)history.replaceState(null,'',`#${i+1}`);
+const DATA = {"entreprise": {"nom": "Biscuiterie Bréval", "accroche": "Biscuits au beurre et au chocolat, vendus en supermarché partout en France.", "fiche": ["SAS fondée en 1987, une usine en France", "85 salariés", "Capital : famille fondatrice (60 %) et un fonds d'investissement (40 %)", "Dirigée par une directrice générale recrutée à l'extérieur, non actionnaire"]}, "jauges": {"fin": {"label": "Santé financière", "def": "Trésorerie et rentabilité : l'entreprise peut-elle payer ses charges et investir ?"}, "img": {"label": "Image", "def": "Réputation et confiance des consommateurs, des médias et du public."}, "soc": {"label": "Climat social", "def": "Motivation des salariés, qualité du dialogue social, risque de conflit."}}, "depart": {"fin": 6, "img": 6, "soc": 6}, "seuils": {"faillite": "Santé financière à 0 : faillite immédiate, fin de partie. Tout le monde a perdu.", "img0": "Image à 0 : boycott massif. Santé financière −1 à chaque décision tant que l'image reste à 0.", "soc0": "Climat social à 0 : grève générale. Santé financière −1 à chaque décision tant que le climat reste à 0."}, "roles": [{"id": "DIR", "nom": "Dirigeants", "article": "Les", "couleur": "#062DA1", "icone": "costume", "qui": "La directrice générale et son comité de direction.", "interet": "Faire durer l'entreprise en arbitrant entre des intérêts opposés.", "objectif": {"texte": "Les 3 jauges à 5 ou plus à la fin, sans faillite.", "jauges": {"fin": 5, "img": 5, "soc": 5}, "decision": null}, "moyens": ["Prennent les décisions de gestion au quotidien : prix, embauches, contrats, investissements courants.", "Rendent des comptes aux associés, qui peuvent les révoquer.", "En cas d'égalité au vote, leur choix l'emporte."], "levier": {"nom": "Arbitrage de la direction", "reel": "La direction tranche sans attendre de consensus.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). Mais passer en force crispe les équipes : climat social −1.", "code": {"toujours": {"soc": -1}}}}, {"id": "PRO", "nom": "Propriétaires", "article": "Les", "couleur": "#7B3FA0", "icone": "pieces", "qui": "Les associés : la famille fondatrice et le fonds d'investissement.", "interet": "Un retour sur l'argent investi : dividendes et valeur de l'entreprise.", "objectif": {"texte": "Santé financière à 6 ou plus, et dividendes versés (décision 10 = A).", "jauges": {"fin": 6}, "decision": {"num": 10, "choix": "A"}}, "moyens": ["Votent en assemblée générale : approbation des comptes, affectation du bénéfice, grandes orientations.", "Nomment et peuvent révoquer la directrice générale.", "Financent les gros investissements… ou refusent de le faire, voire revendent leurs parts."], "levier": {"nom": "Menace de retrait du fonds", "reel": "Le fonds menace de vendre ses parts et de ne plus financer l'entreprise.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). Si votre option perd, le fonds réduit son soutien : santé financière −1.", "code": {"siPerd": {"fin": -1}}}}, {"id": "SAL", "nom": "Salariés", "article": "Les", "couleur": "#E8452C", "icone": "salaries", "qui": "Les 85 salariés, représentés par le CSE et les syndicats.", "interet": "Un bon salaire, des conditions de travail correctes, un emploi stable.", "objectif": {"texte": "Climat social à 8 ou plus, et hausse de salaire obtenue (décision 2 = A).", "jauges": {"soc": 8}, "decision": {"num": 2, "choix": "A"}}, "moyens": ["Le CSE doit être consulté sur les décisions importantes (organisation, emploi, projets de réorganisation).", "Les syndicats négocient chaque année les salaires avec la direction (négociation annuelle obligatoire).", "Peuvent quitter l'entreprise : le turnover coûte cher en recrutement et en formation."], "levier": {"nom": "Grève", "reel": "Droit garanti par la Constitution : arrêt collectif du travail pour appuyer des revendications.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). La production s'arrête : santé financière −1.", "code": {"toujours": {"fin": -1}}}}, {"id": "CLI", "nom": "Clients", "article": "Les", "couleur": "#F2994A", "icone": "client", "qui": "Les consommateurs qui achètent les biscuits en supermarché.", "interet": "Un bon rapport qualité/prix et des produits en qui ils ont confiance.", "objectif": {"texte": "Image à 7 ou plus, et baisse de prix obtenue (décision 1 = A).", "jauges": {"img": 7}, "decision": {"num": 1, "choix": "A"}}, "moyens": ["Choisissent chaque jour d'acheter… ou de prendre la marque concurrente juste à côté en rayon.", "Laissent des avis, réclament, partagent leur expérience sur les réseaux sociaux.", "Leur comportement d'achat décide du chiffre d'affaires."], "levier": {"nom": "Boycott", "reel": "Refus collectif d'acheter, souvent relayé sur les réseaux sociaux.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). Si votre option perd, les ventes chutent : santé financière −1 et image −1.", "code": {"siPerd": {"fin": -1, "img": -1}}}}, {"id": "ETA", "nom": "État", "article": "L'", "couleur": "#1B8A8F", "icone": "drapeau", "qui": "L'État et les collectivités (Région, administrations de contrôle).", "interet": "L'emploi, le respect de la loi, la santé publique, les recettes fiscales.", "objectif": {"texte": "Climat social à 6 ou plus, santé financière à 6 ou plus, et emplois créés en France (décision 7 = B).", "jauges": {"soc": 6, "fin": 6}, "decision": {"num": 7, "choix": "B"}}, "moyens": ["Fixe les règles : droit du travail, normes d'hygiène, étiquetage, environnement.", "Prélève les impôts et cotisations, accorde des aides et subventions sous conditions.", "Contrôle et sanctionne : inspection du travail, DGCCRF (répression des fraudes), Urssaf."], "levier": {"nom": "Aide sous conditions", "reel": "La Région conditionne une subvention à un engagement de l'entreprise.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). Si votre option gagne, l'aide est versée : santé financière +1.", "code": {"siGagne": {"fin": 1}}}}, {"id": "SOC", "nom": "Société civile", "article": "La", "couleur": "#2E9E5B", "icone": "foule", "qui": "Associations, médias, riverains, citoyens.", "interet": "Des entreprises responsables : environnement, transparence, éthique.", "objectif": {"texte": "Image à 7 ou plus, et emballages changés (décision 6 = A).", "jauges": {"img": 7}, "decision": {"num": 6, "choix": "A"}}, "moyens": ["Les médias enquêtent et révèlent des pratiques contestables.", "Les associations mènent des campagnes, des pétitions, attribuent ou retirent des labels.", "Certaines associations agréées peuvent agir en justice."], "levier": {"nom": "Campagne médiatique", "reel": "Enquête de presse ou campagne d'association largement relayée.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). Si votre option perd, le scandale éclate : image −2.", "code": {"siPerd": {"img": -2}}}}, {"id": "FOU", "nom": "Fournisseurs", "article": "Les", "couleur": "#C2185B", "icone": "poignee", "qui": "Les entreprises qui vendent les matières premières : chocolat, beurre, farine, emballages.", "interet": "Garder un client fiable sur la durée, être payés à temps.", "objectif": {"texte": "Santé financière à 6 ou plus, et contrat conservé (décision 4 = B).", "jauges": {"fin": 6}, "decision": {"num": 4, "choix": "B"}}, "moyens": ["Négocient les prix, les volumes et les délais de paiement.", "Peuvent privilégier d'autres clients ou exiger des garanties si l'entreprise semble fragile.", "Garantissent (ou non) la qualité et la traçabilité des matières premières."], "levier": {"nom": "Renégociation du contrat", "reel": "Le fournisseur menace de revoir ses prix ou ses conditions de paiement.", "effet": "Vos voix comptent double (1 voix si vous n'en aviez aucune). Si votre option perd, il durcit ses conditions : santé financière −1.", "code": {"siPerd": {"fin": -1}}}}], "ordreRetrait": ["FOU", "SOC"], "decisions": [{"num": 1, "titre": "Le prix du paquet", "contexte": "Un concurrent vient de baisser ses prix. Nos ventes reculent et les consommateurs trouvent nos biscuits trop chers.", "A": {"label": "Baisser le prix de 10 %", "impact": {"fin": -1, "img": 2, "soc": 0}, "consequence": "Les ventes repartent, mais chaque paquet rapporte moins."}, "B": {"label": "Garder le prix actuel", "impact": {"fin": 1, "img": -1, "soc": 0}, "consequence": "La marge est préservée, mais une partie des clients passe à la concurrence."}, "poids": {"DIR": 3, "PRO": 1, "SAL": 0, "CLI": 3, "ETA": 0, "SOC": 0, "FOU": 0}, "pourquoi": "La direction fixe les prix, mais ce sont les clients qui décident d'acheter ou non."}, {"num": 2, "titre": "La négociation des salaires", "contexte": "L'inflation a fait grimper le coût de la vie. Lors de la négociation annuelle, les syndicats demandent +4 %.", "A": {"label": "Accorder +4 %", "impact": {"fin": -2, "img": 0, "soc": 2}, "consequence": "Les équipes se sentent reconnues, mais la masse salariale augmente nettement."}, "B": {"label": "Accorder seulement +1 %", "impact": {"fin": 0, "img": 0, "soc": -2}, "consequence": "Les coûts sont maîtrisés, mais la colère monte dans les ateliers."}, "poids": {"DIR": 3, "PRO": 1, "SAL": 3, "CLI": 0, "ETA": 1, "SOC": 0, "FOU": 0}, "pourquoi": "La loi impose une négociation annuelle entre direction et syndicats. L'État fixe le cadre (Smic, règles de négociation)."}, {"num": 3, "titre": "L'organisation du travail", "contexte": "Les équipes sont débordées, l'absentéisme augmente et les accidents de travail aussi.", "A": {"label": "Embaucher 5 personnes en CDI", "impact": {"fin": -2, "img": 0, "soc": 2}, "consequence": "La charge de travail redevient supportable, mais cela coûte cher chaque mois."}, "B": {"label": "Recourir à l'intérim et aux heures supplémentaires", "impact": {"fin": -1, "img": 0, "soc": -1}, "consequence": "C'est flexible et moins cher, mais la fatigue et le turnover persistent."}, "poids": {"DIR": 3, "PRO": 1, "SAL": 2, "CLI": 0, "ETA": 2, "SOC": 0, "FOU": 0}, "pourquoi": "Le CSE est consulté sur l'organisation du travail. L'État veille à la santé et la sécurité (inspection du travail)."}, {"num": 4, "titre": "Le fournisseur de chocolat", "contexte": "Notre fournisseur de chocolat travaille avec nous depuis 15 ans. Un négociant étranger propose 30 % moins cher, sans certification de l'origine du cacao.", "A": {"label": "Changer pour le fournisseur moins cher", "impact": {"fin": 2, "img": -1, "soc": 0}, "consequence": "Les coûts baissent nettement, mais la traçabilité devient un risque."}, "B": {"label": "Garder le fournisseur historique", "impact": {"fin": 0, "img": 1, "soc": 0}, "consequence": "Pas d'économie, mais une qualité et une origine garanties."}, "poids": {"DIR": 3, "PRO": 1, "SAL": 0, "CLI": 1, "ETA": 0, "SOC": 1, "FOU": 3}, "pourquoi": "Le contrat se négocie entre direction et fournisseur. Clients et associations regardent l'origine des matières premières."}, {"num": 5, "titre": "Une nouvelle gamme", "contexte": "Les consommateurs réclament des biscuits moins sucrés. Lancer une gamme « sans sucres ajoutés » demande 400 000 € d'investissement.", "A": {"label": "Investir maintenant", "impact": {"fin": -2, "img": 2, "soc": 1}, "consequence": "On prend de l'avance sur la concurrence, mais la trésorerie se tend."}, "B": {"label": "Reporter à plus tard", "impact": {"fin": 0, "img": -1, "soc": 0}, "consequence": "La trésorerie est préservée, mais les concurrents occupent le terrain."}, "poids": {"DIR": 2, "PRO": 3, "SAL": 1, "CLI": 2, "ETA": 0, "SOC": 0, "FOU": 0}, "pourquoi": "Un investissement de cette taille dépend de l'accord des associés, qui apportent ou non les fonds."}, {"num": 6, "titre": "Les emballages", "contexte": "La loi fixe des objectifs de réduction des emballages plastiques à usage unique. Le papier recyclable coûte plus cher.", "A": {"label": "Passer au papier recyclable dès cette année", "impact": {"fin": -1, "img": 2, "soc": 0}, "consequence": "L'entreprise est en avance et le fait savoir, mais ses coûts augmentent."}, "B": {"label": "Attendre la dernière échéance légale", "impact": {"fin": 0, "img": -2, "soc": 0}, "consequence": "Pas de surcoût immédiat, mais l'entreprise passe pour un mauvais élève."}, "poids": {"DIR": 2, "PRO": 0, "SAL": 0, "CLI": 1, "ETA": 3, "SOC": 2, "FOU": 0}, "pourquoi": "L'État fixe les obligations environnementales. Les associations font pression pour aller plus vite."}, {"num": 7, "titre": "La nouvelle usine", "contexte": "Les commandes augmentent : il faut une nouvelle ligne de production. La Région propose une aide si elle est installée en France.", "A": {"label": "Ouvrir une usine en Roumanie", "impact": {"fin": 3, "img": -2, "soc": -2}, "consequence": "Les coûts de production baissent fortement, mais les salariés français craignent pour leur avenir."}, "B": {"label": "Agrandir l'usine française", "impact": {"fin": -1, "img": 1, "soc": 2}, "consequence": "Des emplois sont créés en France, mais produire coûte plus cher."}, "poids": {"DIR": 2, "PRO": 3, "SAL": 2, "CLI": 0, "ETA": 2, "SOC": 1, "FOU": 0}, "pourquoi": "C'est un choix stratégique validé par les associés. Le CSE est consulté, la Région pèse avec son aide."}, {"num": 8, "titre": "La polémique sur l'additif", "contexte": "Un article de presse met en cause un conservateur présent dans nos biscuits. Il est autorisé et figure bien sur l'étiquette, comme la loi l'exige.", "A": {"label": "Communiquer ouvertement et annoncer son remplacement", "impact": {"fin": -1, "img": 2, "soc": 0}, "consequence": "La transparence rassure, mais il faut payer la nouvelle recette."}, "B": {"label": "Ne rien dire de plus que l'étiquette", "impact": {"fin": 0, "img": -2, "soc": 0}, "consequence": "Pas de coût immédiat, mais le silence alimente les soupçons."}, "poids": {"DIR": 3, "PRO": 0, "SAL": 0, "CLI": 2, "ETA": 1, "SOC": 3, "FOU": 0}, "pourquoi": "Les médias et associations font l'opinion. La DGCCRF contrôle l'étiquetage, mais l'additif est légal."}, {"num": 9, "titre": "La flambée du beurre", "contexte": "Le prix du beurre a fortement augmenté. Le remplacer par une matière grasse végétale réduirait les coûts.", "A": {"label": "Garder le pur beurre", "impact": {"fin": -2, "img": 1, "soc": 0}, "consequence": "La recette reste fidèle, mais la marge fond."}, "B": {"label": "Passer à la matière grasse végétale", "impact": {"fin": 2, "img": -2, "soc": 0}, "consequence": "Les coûts baissent, mais les clients fidèles remarquent la différence."}, "poids": {"DIR": 3, "PRO": 1, "SAL": 0, "CLI": 3, "ETA": 0, "SOC": 0, "FOU": 1}, "pourquoi": "La recette est un choix de la direction, mais ce sont les clients qui jugent la qualité."}, {"num": 10, "titre": "Le bénéfice de l'année", "contexte": "L'année se termine avec un bénéfice. Les associés réunis en assemblée générale doivent décider de son affectation.", "A": {"label": "Verser l'essentiel en dividendes", "impact": {"fin": -2, "img": 0, "soc": -1}, "consequence": "Les associés sont récompensés, mais l'argent sort de l'entreprise et les salariés grincent des dents."}, "B": {"label": "Garder le bénéfice pour investir", "impact": {"fin": 2, "img": 0, "soc": 1}, "consequence": "L'entreprise renforce ses réserves et prépare l'avenir, mais les associés attendront."}, "poids": {"DIR": 1, "PRO": 3, "SAL": 1, "CLI": 0, "ETA": 0, "SOC": 0, "FOU": 0}, "pourquoi": "En SAS, ce sont les associés qui votent l'affectation du bénéfice en assemblée générale."}]};
+const ICONS = {"costume": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M30 112 L36 44 Q38 32 50 30 L60 46 L70 30 Q82 32 84 44 L90 112 Z\" fill=\"#5B6FB5\"/>\n  <path d=\"M50 30 L60 46 L70 30 L66 24 H54 Z\" fill=\"#fff\"/>\n  <path d=\"M60 46 L55 58 L60 96 L65 58 Z\" fill=\"#062DA1\"/>\n  <path d=\"M50 30 L46 52 L60 46 M70 30 L74 52 L60 46\" fill=\"#3E4F8F\"/>\n  <circle cx=\"60\" cy=\"14\" r=\"10\" fill=\"#FDDED6\"/></svg>", "pieces": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><ellipse cx=\"44\" cy=\"80\" rx=\"26\" ry=\"9\" fill=\"#F7C948\"/>\n  <path d=\"M18 80 V96 Q18 105 44 105 Q70 105 70 96 V80\" fill=\"#F7C948\"/>\n  <ellipse cx=\"44\" cy=\"64\" rx=\"26\" ry=\"9\" fill=\"#F7C948\"/>\n  <path d=\"M18 64 V78 Q18 86 44 86 Q70 86 70 78 V64\" fill=\"#F2B91E\"/>\n  <circle cx=\"80\" cy=\"50\" r=\"28\" fill=\"#fff\"/>\n  <circle cx=\"80\" cy=\"50\" r=\"20\"/>\n  <path d=\"M88 40 Q80 34 74 40 Q70 46 70 52 Q70 62 80 64 Q86 64 90 60 M66 47 H82 M66 55 H82\"/></svg>", "salaries": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M14 108 Q14 84 34 84 Q54 84 54 108 Z\" fill=\"#4A90E2\"/>\n  <path d=\"M66 108 Q66 84 86 84 Q106 84 106 108 Z\" fill=\"#2E9E5B\"/>\n  <path d=\"M36 112 Q36 82 60 82 Q84 82 84 112 Z\" fill=\"#E8452C\"/>\n  <circle cx=\"34\" cy=\"68\" r=\"11\" fill=\"#FDDED6\"/><circle cx=\"86\" cy=\"68\" r=\"11\" fill=\"#FDDED6\"/>\n  <circle cx=\"60\" cy=\"64\" r=\"13\" fill=\"#FDDED6\"/>\n  <path d=\"M44 58 Q44 42 60 42 Q76 42 76 58 Z\" fill=\"#F7C948\"/><path d=\"M40 58 H80\"/>\n  <path d=\"M22 62 Q22 50 34 50 Q46 50 46 62 Z\" fill=\"#F7C948\"/>\n  <path d=\"M74 62 Q74 50 86 50 Q98 50 98 62 Z\" fill=\"#F7C948\"/></svg>", "client": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><circle cx=\"44\" cy=\"26\" r=\"13\" fill=\"#FDDED6\"/>\n  <path d=\"M24 112 V60 Q24 44 44 44 Q64 44 64 60 V112 Z\" fill=\"#fff\"/>\n  <path d=\"M64 60 L78 72\"/>\n  <path d=\"M70 66 H104 L98 108 H76 Z\" fill=\"#F2994A\"/>\n  <path d=\"M78 66 Q78 52 87 52 Q96 52 96 66\"/></svg>", "drapeau": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M22 16 V112\" stroke-width=\"6\"/>\n  <path d=\"M22 20 H48 V78 H22 Z\" fill=\"#062DA1\"/>\n  <path d=\"M48 20 H74 V78 H48 Z\" fill=\"#fff\"/>\n  <path d=\"M74 20 H100 V78 H74 Z\" fill=\"#E8452C\"/></svg>", "foule": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"16\" y=\"22\" width=\"88\" height=\"34\" rx=\"4\" fill=\"#fff\"/>\n  <path d=\"M28 34 H92 M28 44 H76\"/>\n  <path d=\"M10 112 Q10 84 30 84 Q50 84 50 112 Z\" fill=\"#2E9E5B\"/>\n  <path d=\"M70 112 Q70 84 90 84 Q110 84 110 112 Z\" fill=\"#062DA1\"/>\n  <path d=\"M38 114 Q38 86 60 86 Q82 86 82 114 Z\" fill=\"#E8452C\"/>\n  <circle cx=\"30\" cy=\"72\" r=\"10\" fill=\"#FDDED6\"/><circle cx=\"90\" cy=\"72\" r=\"10\" fill=\"#FDDED6\"/>\n  <circle cx=\"60\" cy=\"70\" r=\"11\" fill=\"#FDDED6\"/>\n  <path d=\"M30 56 V62 M90 56 V62\"/></svg>", "poignee": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M14 52 L32 38 L50 46 L60 40 L88 38 L106 52 L96 78 L70 98 Q64 102 58 96 L30 74 Z\" fill=\"#FDDED6\"/>\n  <path d=\"M8 46 L24 34 L36 62 L20 74 Z\" fill=\"#C2185B\"/>\n  <path d=\"M112 46 L96 34 L84 62 L100 74 Z\" fill=\"#062DA1\"/>\n  <path d=\"M50 46 L40 60 Q46 66 54 60 L62 52 L84 70 M58 96 L46 84 M66 90 L52 76 M74 84 L60 70\"/></svg>", "biscuit": "<svg viewBox=\"0 0 120 120\" width=\"120\" height=\"120\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" stroke=\"#07164D\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><circle cx=\"60\" cy=\"60\" r=\"44\" fill=\"#E9B872\"/>\n  <circle cx=\"44\" cy=\"46\" r=\"6\" fill=\"#6B3E1E\" stroke=\"none\"/><circle cx=\"72\" cy=\"40\" r=\"5\" fill=\"#6B3E1E\" stroke=\"none\"/>\n  <circle cx=\"78\" cy=\"68\" r=\"7\" fill=\"#6B3E1E\" stroke=\"none\"/><circle cx=\"50\" cy=\"76\" r=\"6\" fill=\"#6B3E1E\" stroke=\"none\"/>\n  <circle cx=\"62\" cy=\"58\" r=\"4\" fill=\"#6B3E1E\" stroke=\"none\"/></svg>"};
+const R = Object.fromEntries(DATA.roles.map(r => [r.id, r]));
+const ORDER = ["DIR","PRO","SAL","CLI","ETA","SOC","FOU"];
+const JK = ["fin","img","soc"];
+const JI = {fin:"€", img:"★", soc:"♥"};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const clamp = v => Math.max(0, Math.min(10, v));
+
+let S;
+function fresh(n){
+  const removed = DATA.ordreRetrait.slice(0, 7 - n);
+  return {screen:"setup", nGroups:n, active: ORDER.filter(id => !removed.includes(id)),
+    g:{...DATA.depart}, prev:null, idx:0, votes:{}, levers:{}, used:{}, history:[], result:null, bankrupt:false};
 }
-function fromHash(){const n=parseInt(location.hash.slice(1),10);show(Number.isFinite(n)?n-1:0,false);}
+S = window.claude?.hot?.data?.S || fresh(7);
+window.claude?.hot?.snapshot?.(() => ({S}));
+
+function icon(id, size){ return `<span style="display:inline-flex;width:${size}px;height:${size}px">${ICONS[R[id].icone]}</span>`; }
+function dots(n, c){ return n === 0 ? `<span>aucune voix</span>` : `<span class="dots" style="--c:${c}">${[0,1,2].map(i => `<i class="${i<n?'on':''}"></i>`).join("")}</span> ${n} voix`; }
+
+function zone(v){ return v <= 3 ? "var(--bad)" : v <= 5 ? "var(--warn)" : "var(--ok)"; }
+function renderTop(){
+  $("#brand").innerHTML = `${ICONS.biscuit.replace('width="120" height="120"','width="38" height="38"')}<div><b>STRATÉJEUX</b><div class="co">${esc(DATA.entreprise.nom)}</div></div>`;
+  $("#gauges").innerHTML = JK.map(k => {
+    const v = S.g[k], d = S.prev ? v - S.prev[k] : 0;
+    return `<div class="g" role="meter" aria-label="${DATA.jauges[k].label}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
+      <div class="hd"><span>${JI[k]} ${DATA.jauges[k].label}</span><span>${v}/10${d ? `<span class="delta ${d>0?'up':'down'}">${d>0?'+':''}${d}</span>` : ''}</span></div>
+      <div class="segs">${Array.from({length:10},(_,i)=>`<div class="seg" style="${i<v?`background:${zone(v)}`:''}"></div>`).join("")}</div></div>`;
+  }).join("");
+  const a = [];
+  if (S.g.img === 0) a.push("Boycott massif : −1 santé financière à chaque décision");
+  if (S.g.soc === 0) a.push("Grève générale : −1 santé financière à chaque décision");
+  if (S.g.fin > 0 && S.g.fin <= 2) a.push("Risque de faillite");
+  $("#alerts").innerHTML = a.map(t => `<span class="alert">⚠ ${t}</span>`).join("");
+}
+
+function render(){
+  renderTop();
+  const app = $("#app");
+  if (S.screen === "setup") app.innerHTML = setupView();
+  else if (S.screen === "end") app.innerHTML = endView();
+  else app.innerHTML = decisionView();
+}
+
+function setupView(){
+  const E = DATA.entreprise;
+  const chips = ORDER.map(id => `<span class="chip ${S.active.includes(id)?'':'off'}" style="background:${R[id].couleur}"><span class="ic">${icon(id,20)}</span>${esc(R[id].nom)}</span>`).join("");
+  return `<div class="setup">
+    <section class="card">
+      <div class="eyebrow">Jeu des parties prenantes</div>
+      <h1>Qui décide vraiment ?</h1>
+      <p class="dctx">${esc(E.accroche)} Pendant 10 décisions, chaque groupe défend ses intérêts, négocie et vote. Mais tout le monde n'a pas le même poids.</p>
+      <h3 style="margin-top:18px;font-size:16px">Combien de groupes jouent ?</h3>
+      <div class="choice" role="group" aria-label="Nombre de groupes">${[5,6,7].map(n=>`<button id="ng${n}" aria-pressed="${S.nGroups===n}" onclick="setN(${n})">${n} groupes</button>`).join("")}</div>
+      <div class="rolelist">${chips}</div>
+      <p class="hint" style="margin-top:10px">À 6 groupes, les Fournisseurs sont retirés. À 5 groupes, la Société civile l'est aussi.</p>
+      <button class="btn yellow" id="start" style="margin-top:8px" onclick="start()">Commencer la partie</button>
+    </section>
+    <section class="card">
+      <div class="eyebrow">L'entreprise</div>
+      <h2 style="color:var(--navy);font-size:24px;margin-top:4px">${esc(E.nom)}</h2>
+      <ul class="co-list">${E.fiche.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+      <div class="eyebrow" style="margin-top:18px">Les 3 jauges</div>
+      <ul class="co-list">${JK.map(k=>`<li><b>${JI[k]} ${DATA.jauges[k].label}</b> : ${esc(DATA.jauges[k].def)}</li>`).join("")}</ul>
+      <p class="hint">Départ : 6/10 partout. Santé financière à 0 = faillite. Image ou climat social à 0 = −1 santé financière à chaque décision.</p>
+    </section>
+  </div>`;
+}
+function setN(n){ S = fresh(n); render(); }
+function start(){ S.screen = "decision"; S.idx = 0; render(); }
+
+function weight(id, d){ return d.poids[id] || 0; }
+function canVote(id, d){ return weight(id, d) > 0 || S.levers[id]; }
+function effVotes(id, d){ const w = weight(id, d); return S.levers[id] ? (w === 0 ? 1 : w * 2) : w; }
+
+function decisionView(){
+  const d = DATA.decisions[S.idx], res = S.result;
+  const opt = k => `<div class="opt ${k} ${res ? (res.win===k?'win':'lose') : ''}"><div class="l">OPTION ${k}</div><div class="t">${esc(d[k].label)}</div></div>`;
+  const rows = S.active.map(id => {
+    const r = R[id], w = weight(id, d), v = S.votes[id], lv = !!S.levers[id], used = S.used[id] !== undefined && S.used[id] !== S.idx;
+    const can = canVote(id, d);
+    return `<div class="vr" style="--c:${r.couleur}">
+      <div class="nm"><span class="ic">${icon(id,30)}</span>${esc(r.nom)}<span class="w">${dots(w, r.couleur)}</span></div>
+      <div class="ab">${["A","B"].map(k=>`<button id="v-${id}-${k}" aria-pressed="${v===k}" ${(!can||res)?'disabled':''} onclick="vote('${id}','${k}')">${k}</button>`).join("")}</div>
+      <button class="lev" id="lv-${id}" aria-pressed="${lv}" ${(used||res)?'disabled':''} onclick="toggleLever('${id}')"><span class="box">${lv?'✓':''}</span><span><b>${esc(r.levier.nom)}</b>${used?' · déjà utilisé':''}</span></button>
+      ${!can && !res ? `<div class="nov">Pas de vote direct : convainquez les autres.</div>` : ''}
+    </div>`;
+  }).join("");
+  const missing = S.active.filter(id => canVote(id, d) && !S.votes[id]);
+  const actions = res
+    ? `<span class="hint">Décision ${d.num} sur 10</span><button class="btn yellow" id="next" onclick="next()">${S.bankrupt ? 'Voir la fin de partie' : S.idx === 9 ? 'Voir les résultats' : 'Décision suivante'}</button>`
+    : `<span class="hint">${missing.length ? `En attente du vote : ${missing.map(id=>esc(R[id].nom)).join(", ")}` : 'Tous les votes sont saisis.'}</span><button class="btn" id="reveal" ${missing.length?'disabled':''} onclick="reveal()">Dévoiler le résultat</button>`;
+  return `<div class="dec">
+    <section class="card">
+      <div class="dhead"><div class="num">${d.num}</div><div style="min-width:0"><div class="eyebrow">Décision ${d.num} / 10</div><h2 class="dtitle">${esc(d.titre)}</h2><p class="dctx">${esc(d.contexte)}</p></div></div>
+      <div class="opts">${opt("A")}${opt("B")}</div>
+      <p class="why muted"><b>Qui pèse ici ?</b> ${esc(d.pourquoi)}</p>
+      ${res ? resultBlock(d, res) : ''}
+    </section>
+    <div class="bar-actions">${actions}</div>
+    <div class="votes">${rows}</div>
+  </div>`;
+}
+
+function vote(id, k){ S.votes[id] = S.votes[id] === k ? undefined : k; render(); }
+function toggleLever(id){
+  if (S.levers[id]) { delete S.levers[id]; delete S.used[id];
+    const d = DATA.decisions[S.idx]; if (weight(id,d) === 0) delete S.votes[id]; }
+  else { S.levers[id] = true; S.used[id] = S.idx; }
+  render();
+}
+
+function addTo(acc, eff, src, log){
+  for (const k in eff){ if (!eff[k]) continue; acc[k] = (acc[k]||0) + eff[k]; log.push({src, k, v:eff[k]}); }
+}
+function reveal(){
+  const d = DATA.decisions[S.idx];
+  const tot = {A:0, B:0}, detail = [];
+  S.active.forEach(id => { if (S.votes[id]) { const n = effVotes(id, d); tot[S.votes[id]] += n; detail.push({id, k:S.votes[id], n}); } });
+  let win = tot.A > tot.B ? "A" : tot.B > tot.A ? "B" : (S.votes.DIR || "A");
+  const tie = tot.A === tot.B;
+  const delta = {}, log = [];
+  addTo(delta, d[win].impact, "Décision", log);
+  Object.keys(S.levers).forEach(id => {
+    const c = R[id].levier.code, won = S.votes[id] === win;
+    if (c.toujours) addTo(delta, c.toujours, R[id].levier.nom, log);
+    if (c.siPerd && !won) addTo(delta, c.siPerd, R[id].levier.nom, log);
+    if (c.siGagne && won) addTo(delta, c.siGagne, R[id].levier.nom, log);
+  });
+  S.prev = {...S.g};
+  JK.forEach(k => S.g[k] = clamp(S.g[k] + (delta[k]||0)));
+  const extra = [];
+  if (S.g.img === 0){ S.g.fin = clamp(S.g.fin - 1); extra.push("Boycott massif : santé financière −1"); }
+  if (S.g.soc === 0){ S.g.fin = clamp(S.g.fin - 1); extra.push("Grève générale : santé financière −1"); }
+  S.bankrupt = S.g.fin === 0;
+  S.result = {win, tot, tie, detail, log, extra};
+  S.history.push({num:d.num, titre:d.titre, win, label:d[win].label, levers:Object.keys(S.levers)});
+  render();
+}
+function resultBlock(d, res){
+  const max = Math.max(res.tot.A + res.tot.B, 1);
+  const seg = k => res.detail.filter(x=>x.k===k).map(x=>`<span title="${esc(R[x.id].nom)} : ${x.n}" style="width:${x.n/max*100}%;background:${R[x.id].couleur}"></span>`).join("");
+  const effs = JK.map(k => { const v = S.g[k] - S.prev[k]; return v ? `<span class="eff ${v>0?'up':'down'}">${JI[k]} ${DATA.jauges[k].label} ${v>0?'+':''}${v}</span>` : ''; }).join("");
+  const levLines = res.log.filter(l => l.src !== "Décision").map(l => `<li>${esc(l.src)} : ${DATA.jauges[l.k].label} ${l.v>0?'+':''}${l.v}</li>`).concat(res.extra.map(t=>`<li>${esc(t)}</li>`)).join("");
+  return `<div style="margin-top:16px;border-top:2px dashed var(--line);padding-top:14px">
+    <div class="eyebrow">Résultat du vote</div>
+    <div class="tally">
+      <span class="lab" style="color:var(--navy)">A</span><div class="track">${seg("A")}</div><span class="n">${res.tot.A}</span>
+      <span class="lab" style="color:var(--coral)">B</span><div class="track">${seg("B")}</div><span class="n">${res.tot.B}</span>
+    </div>
+    ${res.tie ? `<p class="hint">Égalité : le choix des Dirigeants l'emporte.</p>` : ''}
+    <p class="conseq">Option ${res.win} retenue. ${esc(d[res.win].consequence)}</p>
+    <div class="effects">${effs || '<span class="eff">Pas de changement des jauges</span>'}</div>
+    ${levLines ? `<ul class="log">${levLines}</ul>` : ''}
+    ${S.bankrupt ? `<p class="conseq" style="color:var(--bad)">Faillite : l'entreprise ne peut plus payer ses charges.</p>` : ''}
+  </div>`;
+}
+function next(){
+  if (S.bankrupt || S.idx === 9){ S.screen = "end"; render(); return; }
+  S.idx++; S.votes = {}; S.levers = {}; S.result = null; S.prev = null; render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function check(r){
+  const o = r.objectif, why = [];
+  let ok = !S.bankrupt;
+  if (S.bankrupt) why.push("L'entreprise a fait faillite");
+  for (const k in o.jauges){ const pass = S.g[k] >= o.jauges[k]; ok = ok && pass; why.push(`${DATA.jauges[k].label} : ${S.g[k]}/10 (objectif ${o.jauges[k]}) ${pass?'✓':'✗'}`); }
+  if (o.decision){ const h = S.history.find(x => x.num === o.decision.num); const pass = h && h.win === o.decision.choix; ok = ok && pass;
+    why.push(`Décision ${o.decision.num} = ${o.decision.choix} : ${h ? 'option '+h.win+' retenue' : 'non jouée'} ${pass?'✓':'✗'}`); }
+  return {ok, why};
+}
+function endView(){
+  const res = S.active.map(id => { const r = R[id], c = check(r);
+    return `<div class="res ${c.ok?'won':'lost'}" style="--c:${r.couleur}"><div class="nm" style="display:flex;align-items:center;gap:8px;font-weight:700">${icon(id,28)}${esc(r.nom)}</div>
+    <div class="st">${c.ok?'OBJECTIF ATTEINT':'OBJECTIF MANQUÉ'}</div><ul>${c.why.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></div>`; }).join("");
+  const n = S.active.filter(id => check(R[id]).ok).length;
+  return `<section class="card" style="margin-top:16px">
+    <div class="eyebrow">Fin de partie</div>
+    <h2 class="dtitle">${S.bankrupt ? "La Biscuiterie a fait faillite." : n === 0 ? "L'entreprise a survécu, mais personne n'a atteint son objectif." : `${n} groupe${n>1?'s ont':' a'} atteint ${n>1?'leur':'son'} objectif.`}</h2>
+    <div class="results">${res}</div>
+    <div class="eyebrow" style="margin-top:20px">Les choix de l'entreprise</div>
+    <div class="hist">${S.history.map(h=>`<div><b>${h.num}. ${esc(h.titre)}</b> : ${h.win} · ${esc(h.label)}${h.levers.length?` <span class="muted">(levier : ${h.levers.map(id=>esc(R[id].nom)).join(", ")})</span>`:''}</div>`).join("")}</div>
+    <p class="hint" style="margin-top:14px">Pour le débrief : quel groupe a eu le plus de pouvoir, et d'où venait-il ? Quelles décisions ont opposé deux groupes ? Quelle stratégie l'entreprise a-t-elle suivie, sans que personne ne l'ait choisie au départ ?</p>
+    <button class="btn ghost" id="replay" style="margin-top:8px" onclick="setN(${S.nGroups})">Rejouer</button>
+  </section>`;
+}
+
+const boot = () => render();
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot();
+</script>
+
+<script>
+// Navigation des diapos de consignes, puis bascule vers le jeu
+const intro=document.getElementById('intro'), stage=document.getElementById('stage');
+const slides=[...stage.querySelectorAll('.slide')];
+let si=0;
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+function show(n){
+  si=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>{s.classList.toggle('active',k===si);s.setAttribute('aria-hidden',k!==si);});
+  document.getElementById('count').textContent=`${si+1} / ${slides.length}`;
+  history.replaceState(null,'',`#${si+1}`);
+}
+function play(){
+  intro.hidden=true;document.documentElement.classList.remove('intro-mode');
+  document.getElementById('rules').hidden=false;
+  history.replaceState(null,'','#jeu');window.scrollTo(0,0);
+}
+function openIntro(){
+  intro.hidden=false;document.documentElement.classList.add('intro-mode');
+  document.getElementById('rules').hidden=true;show(si);fit();
+}
+function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();}
 addEventListener('resize',fit);
-addEventListener('hashchange',fromHash);
 addEventListener('keydown',e=>{
-  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(i+1);}
-  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(i-1);}
+  if(intro.hidden)return;
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(si+1);}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(si-1);}
   else if(e.key==='Home')show(0);
   else if(e.key==='End')show(slides.length-1);
   else if(e.key==='f'||e.key==='F')toggleFs();
 });
-document.getElementById('prev').onclick=()=>show(i-1);
-document.getElementById('next').onclick=()=>show(i+1);
+document.getElementById('prev').onclick=()=>show(si-1);
+document.getElementById('next').onclick=()=>show(si+1);
 document.getElementById('fs').onclick=()=>toggleFs();
-function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();}
-stage.addEventListener('click',e=>{if(e.target.closest('a'))return;show(e.clientX<innerWidth/3?i-1:i+1);});
+document.querySelectorAll('[data-play]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();play();}));
+stage.addEventListener('click',e=>{if(e.target.closest('a,button'))return;show(e.clientX<innerWidth/3?si-1:si+1);});
 let x0=null;
-addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
-addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(dx<0?i+1:i-1);x0=null;});
-fit();fromHash();
+intro.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
+intro.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(dx<0?si+1:si-1);x0=null;});
+if(location.hash==='#jeu'){play();}
+else{const n=parseInt(location.hash.slice(1),10);document.documentElement.classList.add('intro-mode');show(Number.isFinite(n)?n-1:0);fit();}
 </script>
 </body>
 </html>

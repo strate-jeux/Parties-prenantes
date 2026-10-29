@@ -1,8 +1,14 @@
 # Qui décide vraiment ?
 
-Diapo de présentation du jeu des parties prenantes STRATÉJEUX (Biscuiterie Bréval), en une seule page HTML publiée avec GitHub Pages.
+Jeu des parties prenantes STRATÉJEUX (Biscuiterie Bréval), en une seule page HTML publiée avec GitHub Pages.
 
+En arrivant sur la page, on voit d'abord les consignes en diapos, puis on lance la partie et on saisit les votes de chaque groupe à chaque décision.
+
+**Consignes**
 - Avancer / reculer : flèches du clavier, espace, clic (tiers gauche = retour) ou glissement sur mobile
 - Plein écran : touche `F` ou bouton ⛶
-- Aller à une diapo : ajouter `#3` à l'adresse, par exemple
-- Exporter en PDF : imprimer la page depuis le navigateur (une diapo par page)
+- « Passer au jeu » (en bas à droite) ou « Commencer la partie » sur la dernière diapo
+
+**Jeu**
+- Bouton « Revoir les consignes » en bas à droite pendant la partie
+- Lien direct vers le jeu sans les consignes : ajouter `#jeu` à l'adresse
